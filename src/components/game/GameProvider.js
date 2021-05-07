@@ -31,7 +31,9 @@ export const GameProvider = (props) => {
     
     const getGameTypes = () => {
         return fetch("http://localhost:8000/gametypes", {
-            "Authorization": `Token ${localStorage.getItem("lu_token")}`
+            headers: {
+                "Authorization": `Token ${localStorage.getItem("lu_token")}`
+            }
          })
             .then(response => response.json())
             .then(setTypes)
