@@ -7,7 +7,7 @@ export const EventForm = () => {
     const history = useHistory()
 
     const [currentEvent, setEvent] = useState({
-        eventDate: "01/01/01",
+        eventDate: "2001-01-01",
         time: "12:00",
         gameId: 0,
         description: ""
