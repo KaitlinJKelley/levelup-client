@@ -11,7 +11,7 @@ export const ApplicationViews = () => {
             margin: "5rem 2rem",
             lineHeight: "1.75rem"
         }}>
-            <GameProvider>
+          <GameProvider>
                 <Route exact path="/">
                     <GameList />
                 </Route>
