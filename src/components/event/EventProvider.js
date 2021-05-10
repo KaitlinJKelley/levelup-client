@@ -28,13 +28,15 @@ export const EventProvider = (props) => {
     }
 
     const leaveEvent = eventId => {
+        debugger
         return fetch(`http://localhost:8000/events/${ eventId }/signup`, {
             method: "DELETE",
             headers:{
                 "Authorization": `Token ${localStorage.getItem("lu_token")}`
             }
         })
-            .then(response => response.json())
+            // signup function in server returns None after delete instead of an object
+            // .then(response => response.json())
             .then(getEvents)
     }
     
