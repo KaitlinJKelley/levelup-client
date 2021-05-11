@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from "react"
 import { GameContext } from "./GameProvider.js"
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 
 export const GameForm = () => {
     const history = useHistory()
-    const { createGame, getGameTypes, gameTypes } = useContext(GameContext)
+    const { createGame, getGameTypes, gameTypes, getGameById, updateGame } = useContext(GameContext)
 
     /*
         Since the input fields are bound to the values of
@@ -20,31 +20,35 @@ export const GameForm = () => {
         gameTypeId: 0
     })
 
+    const {gameId} = useParams()
     /*
         Get game types on initialization so that the <select>
         element presents game type choices to the user.
     */
     useEffect(() => {
         getGameTypes()
+        if (gameId) {
+            getGameById(gameId)
+            .then(game => {
+                let gameToEdit = {...currentGame}
+
+                gameToEdit.id = game.id
+                gameToEdit.skillLevel = game.skill_level
+                gameToEdit.numberOfPlayers = game.num_of_players
+                gameToEdit.name = game.name
+                gameToEdit.maker = game.maker
+                gameToEdit.gameTypeId = game.gametype.id
+
+                setCurrentGame(gameToEdit)
+            })
+        }
     }, [])
 
-    /*
-        REFACTOR CHALLENGE START
-
-        Can you refactor this code so that all property
-        state changes can be handled with a single function
-        instead of five functions that all, largely, do
-        the same thing?
-
-        One hint: [event.target.name]
-    */
     const handleInputChange = (event) => {
         const newGameState = { ...currentGame }
         newGameState[event.target.name] = event.target.value
         setCurrentGame(newGameState)
     }
-
-    /* REFACTOR CHALLENGE END */
 
     return (
         <form className="gameForm">
@@ -94,19 +98,15 @@ export const GameForm = () => {
                     // Prevent form from being submitted
                     evt.preventDefault()
 
-                    const game = {
-                        maker: currentGame.maker,
-                        name: currentGame.name,
-                        numberOfPlayers: currentGame.numberOfPlayers,
-                        skillLevel: parseInt(currentGame.skillLevel),
-                        gameTypeId: parseInt(currentGame.gameTypeId)
-                    }
-
                     // Send POST request to your API
-                    createGame(game)
+                    {gameId ? updateGame(currentGame)
+                        .then(() => history.push("/games")) :
+                        createGame(currentGame)
                         .then(() => history.push("/games"))
+                    }
+                    
                 }}
-                className="btn btn-primary">Create</button>
+                className="btn btn-primary">{gameId ? "Save" : "Create"}</button>
         </form>
     )
 }

@@ -28,7 +28,6 @@ export const EventProvider = (props) => {
     }
 
     const leaveEvent = eventId => {
-        debugger
         return fetch(`http://localhost:8000/events/${ eventId }/signup`, {
             method: "DELETE",
             headers:{
